@@ -1,5 +1,6 @@
 import os
 import base64
+import random
 
 from flask import Flask, request, session
 from model import Grade 
@@ -9,6 +10,9 @@ app.secret_key = "dFbVyccvTuNpkUP2x6vcnZWN"
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
+
+    if 'csrf_token' not in session:
+        session['csrf_token'] =  str(random.randint(10000000, 99999999))
 
     if request.method == 'POST':
         g = Grade(
@@ -39,7 +43,7 @@ def home():
 </form>
 
 <h2>Existing Grades</h2>
-"""
+""".format(session['csrf_token'])
     
     for g in Grade.select():
         body += """
